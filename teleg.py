@@ -196,6 +196,7 @@ def start(bot, update):
     print(chats.get_all_chats())
     
 def add(bot, update):
+    chats.add_chat(update.message.chat_id)
     try : 
         if current_order.is_final():
             bot.send_message(chat_id = update.message.chat_id,
@@ -221,6 +222,7 @@ def notify(bot, chat_id):
              text = """מישהו מזמין פלאפל. זה הזמן להזמין פלאפל. פלאפל. (תלחץ /falafel )""")
  
 def text(bot, update):
+    chats.add_chat(update.message.chat_id)
     try:
         text = update.message.text 
         chat_id = update.message.chat_id
@@ -280,6 +282,7 @@ def wait_is_over(bot):
         current_order.cancel(bot)
 
 def done (bot, update):
+    chats.add_chat(update.message.chat_id)
     if current_order.orderrer is None :
         update.message.from_user.send_message(text = 'בלי שטויות בובה')
         return
@@ -291,6 +294,7 @@ def status(bot, update):
                      text = current_order.orders_description(),
                      parse_mode = telegram.ParseMode.HTML)
 def remove(bot, update):
+    chats.add_chat(update.message.chat_id)
     try:
         if current_order.is_final():
             bot.send_message(chat_id = update.message.chat_id,
