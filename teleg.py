@@ -10,7 +10,7 @@ with open("key.txt") as f:
     key = f.read().strip()
 
 MINIMUM_FOR_ORDER = 4
-TWENTY_MINUTES_IN_SECONDS = 60 * 20
+TWENTY_MINUTES_IN_SECONDS = 60 * 30
 FIFTEEN_MINUTES_IN_SECONDS = 60 * 15
 
 s = sched.scheduler()
@@ -18,14 +18,14 @@ s = sched.scheduler()
 welcome_message = """
 שלום כפרה, זה הפלאפלר
 
-כדי להזמין פלאפל (או סביך) שולחים 
+כדי להזמין פלאפל (או סביח) שולחים 
 /falafel
 כדי לבדוק מה המצב של ההזמנה שולחים 
 /status
 כדי לבטל את ההזמנה שלך, שולחים
 /remove
 
-אחרי שההזמנה מתחילה אני מחכה 20 דק׳
+אחרי שההזמנה מתחילה אני מחכה 30 דק׳
 אם יש מספיק ({}) מזמינים אני מגריל אחראי משלוח והוא צריך להתקשר
 אם אין מספיק, ההזמנה מבוטלת. סורי נשמה, לא התכוונתי, אין מה לעשות.
 
@@ -66,7 +66,7 @@ class Chats:
                 f.write(json.dumps(self.all_chats))
 
 
-from collections import namedtuple
+from collections import namedtuple 
 class Order:
     def __init__(self, contact, text, chat_id):
         self.contact = contact
@@ -172,7 +172,7 @@ class OrderManager:
         if len(self.orders) >= MINIMUM_FOR_ORDER:
             message = 'אל דאגה, יש {} מזמינים ועוד חמש דקות אני בוחר פראייר שמתקשר לשבח'.format(len(self.orders))
         else :
-            message = 'מאמי, עוד 5 דק׳ צריך להתקשר ואין מספיק מזמינים. אם אף אחד לא יצוץ אני מבטל ת׳הזמנה'
+            message = 'מאמי, עוד 15 דק׳ צריך להתקשר ואין מספיק מזמינים. אם אף אחד לא יצוץ אני מבטל ת׳הזמנה'
         for order in self.orders:
             bot.send_message(chat_id = order.chat_id, 
 				text = message)
@@ -310,6 +310,7 @@ def notify_all(bot, update):
         bot.send_message(chat_id = chat_id,
 			text = message)
  
+notify_all_handler = CommandHandler('notify_all', notify_all)
 updater = Updater(token = key)
 dispatcher = updater.dispatcher
 start_handler = CommandHandler('start', start)
@@ -319,10 +320,12 @@ remove_handler = CommandHandler('remove', remove)
 done_handler= CommandHandler('done', done)
 text_handler = MessageHandler(Filters.text, text)
 dispatcher.add_handler(text_handler)
+dispatcher.add_handler(text_handler)
 dispatcher.add_handler(remove_handler)
 dispatcher.add_handler(done_handler)
 dispatcher.add_handler(status_handler)
 dispatcher.add_handler(start_handler)
 dispatcher.add_handler(add_handler)
+dispatcher.add_handler(notify_all_handler)
 updater.start_polling()
     
